@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Register</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+    <style>
+      .body {
+        padding: 0px;
+        margin: 0px;
+        background: #ecececc4;
+      }
+      .btn-color {
+        background-color: #2c5194ad;
+        color: #fff;
+      }
+
+      .btn-color:hover {
+        background-color: #2c5194;
+        color: #fff;
+      }
+
+      .profile-image-pic {
+        height: 200px;
+        width: 200px;
+        object-fit: cover;
+      }
+
+      .cardbody-color {
+        background-color: #ebf2fa;
+      }
+
+      .notification {
+        border-radius: 10px 0px 0px 10px;
+        position: fixed;
+        top: 20px;
+        right: 0;
+        width: fit-content;
+        padding: 12px;
+        text-align: center;
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body class="body">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 offset-md-3">
+          <div class="card my-4">
+            <form method="POST" class="card-body cardbody-color p-lg-5">
+              <h2 class="text-center text-dark" style="margin-top: -20px">Register Account</h2>
+              <div class="text-center">
+                <img
+                  src="https://cdn.pixabay.com/photo/2016/03/31/19/56/avatar-1295399_1280.png"
+                  class="img-fluid profile-image-pic img-thumbnail rounded-circle my-3"
+                  width="200px"
+                  alt="profile"
+                />
+              </div>
+
+              <div class="mb-3">
+                <input
+                  required
+                  pattern="^(?!^\s$)[^\s]{1,12}$"
+                  title="Please enter between 1 and 12 characters and do not contain spaces"
+                  type="text"
+                  class="form-control"
+                  id="username"
+                  name="username"
+                  placeholder="User Name"
+                />
+              </div>
+              <div class="mb-3">
+                <input
+                  required
+                  pattern="^(?!^\s$)[^\s]{6,12}$"
+                  title="Please enter between 6 and 12 characters and do not contain spaces"
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  name="password"
+                  placeholder="Password"
+                />
+              </div>
+              <div class="mb-3">
+                <input
+                  required
+                  pattern="^(?!.*\s$)\S.{1,30}$"
+                  maxlength="30"
+                  title="Please enter between 1 and 30 characters and ensure there are no leading or trailing spaces"
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  name="name"
+                  placeholder="Your name"
+                />
+              </div>
+
+              <div class="mb-3">
+                <input
+                  required
+                  pattern="\d{4}"
+                  title="Please enter your year of birth (EX:1999)"
+                  type="text"
+                  class="form-control"
+                  id="YOB"
+                  name="YOB"
+                  placeholder="Year of birth"
+                />
+              </div>
+
+              <div class="text-center"><button type="submit" class="btn btn-color px-5 mb-5 w-100">Register</button></div>
+              <div class="form-text text-center mb-5 text-dark">Has account? <a href="/user/login" class="text-dark fw-bold">Login</a></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="noti">
+      <% if(success_msg != ''){ %>
+      <div class="notification" style="background-color: rgba(0, 193, 135, 0.592)"><%= success_msg %></div>
+      <% } %> <% if(error_msg != ''){ %>
+      <div class="notification" style="background-color: rgba(255, 0, 0, 0.555)"><%= error_msg %></div>
+      <% } %> <% if(error != ''){ %>
+      <div class="notification" style="background-color: rgba(255, 0, 0, 0.555)"><%= error %></div>
+      <% } %>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const noti = document.getElementById("noti");
+        setTimeout(() => {
+          noti.remove();
+        }, 3000);
+      });
+    </script>
+  </body>
+</html>

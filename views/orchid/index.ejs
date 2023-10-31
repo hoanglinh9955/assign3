@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>Orchids</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"/>
+        <link rel="stylesheet" href="main.css" type="text/css"/>
+        <style>
+            .notification {
+                border-radius: 10px 0 0 10px;
+                position: fixed;
+                top: 60px;
+                right: 0;
+                width: fit-content;
+                padding: 12px;
+                text-align: center;
+                font-size: 18px;
+            }
+        </style>
+    </head>
+    <body class="body">
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd">
+            <div class="container-fluid">
+                <a class="navbar-brand">
+                    <i class="fas fa-seedling fa-lg"></i>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="/home">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" style="font-weight: bolder; color: #3ba0fd" href="/orchids">Orchids</a>
+                        </li>
+
+
+                        <% if(userLogin && userLogin.isAdmin){ %>
+                            <li class="nav-item">
+                                <a class="nav-link active" style="font-weight: bolder; color: #3ba0fd" href="/category">Category</a>
+                            </li>
+                        <% } %>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Dropdown
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="#">Action</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">Another action</a>
+                                </li>
+                                <li><hr class="dropdown-divider"/></li>
+                                <li>
+                                    <a class="dropdown-item" href="#">Something else here</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <% if (userLogin) { %>
+
+                        <div class="dropdown mx-4">
+                            <div class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img style="vertical-align: middle; width: 30px; height: 30px; border-radius: 50%" src="https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg" alt="Avatar" class="avatar"/><%= ' ' + userLogin.name %>
+                            </div>
+                            <ul class="dropdown-menu" style="top: 120%; left: -30%; font-size: small">
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="bi bi-person-gear">&ensp;</i>Account Info</a>
+                                </li>
+                                <li><hr class="dropdown-divider"/></li>
+                                <li>
+                                    <a class="dropdown-item" href="/user/logout">
+                                        <i class="bi bi-box-arrow-left">&ensp;</i>Logout</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    <% } else { %>
+                        <a href="/user/login" class="btn btn-success">
+                            Login</a>
+                        <a href="/user/register" class="btn btn-success mx-2">
+                            Register</a>
+                    <% } %>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="card mt-2">
+                <div class="card-header" style="background-color: #cfcfcf">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="input-group input-group-sm">
+                                <input class="form-control p_search_card" type="text" id="p_filter_card" onkeyup="handleSearch()" placeholder="Search by orchid name"/>
+                                <span class="input-group-text">
+                                    <i class="bi bi-search"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-6" style="text-align: center">
+                            <h4 style="color: #0e6fc9; font-weight: bold; margin: auto">Orchid List</h4>
+                        </div>
+                        <% if(userLogin && userLogin.isAdmin){ %>
+                            <div class="col-3" style="text-align: right">
+                                <i data-bs-toggle="modal" data-bs-target="#modal_add_orchid" data-orchid-id="000000000000000" class="bi bi-plus-lg" style="font-size: larger; color: #2b70cc" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add new orchid">Add new Orchid</i>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="row g-4" id="p_list_card">
+                        <% orchidsData.length >0 && orchidsData.forEach(function(orchid){ %>
+                            <div class="col-3 p_card">
+                                <div class="card">
+                                    <img class="card-img-top" style="height: 200px" src="<%= orchid.image %>" alt=""/>
+                                    <div class="card-body" style="background-color: #e5f2fe">
+                                        <h5 class="card-title"><%= orchid.name %></h5>
+                                        <p class="card-text"><%= orchid.category.categoryName %></p>
+                                        <!-- delete orchid -->
+                                        <form method="POST" action="/orchids/<%= orchid._id %>?_method=DELETE">
+                                            <% if(userLogin && userLogin.isAdmin){ %>
+                                                <f
+                                                    style="display: flex; text-align: center; gap: 8px">
+                                                    <!-- modal delete -->
+                                                    <button style="width: 50%" type="submit" class="btn btn-outline-danger" onclick="return confirmDelete()">
+                                                        <i data-bs-toggle="modal" data-bs-target="#modal_delete_orchid" class="bi bi-trash ">&ensp;</i>Delete</button>
+                                                    <a href="/orchids/<%= orchid._id %>" style="width: 50%" type="button" class="btn btn-outline-success">
+                                                        <i class="bi bi-info-circle">&ensp;</i>Detail</a>
+                                                </f>
+                                            <% } else { %>
+                                                <div style="text-align: center">
+                                                    <a href="/orchids/<%= orchid._id %>" style="width: 50%" type="button" class="btn btn-outline-success">
+                                                        <i class="bi bi-info-circle">&ensp;</i>Detail</a>
+                                                </div>
+                                            <% } %>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                        <div id="no_data_message" style="display: none; text-align: center">
+                            <i class="fas fa-file-excel" style="color: #878787bd; font-size: 80px"></i>
+                            <div>No data</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- noti -->
+        <div id="noti">
+            <% if(success_msg != ''){ %>
+                <div class="notification" style="background-color: rgb(58 160 255 / 55%)"><%= success_msg %></div>
+            <% } %>
+            <% if(error_msg != ''){ %>
+                <div class="notification" style="background-color: rgba(255, 0, 0, 0.555)"><%= error_msg %></div>
+            <% } %>
+            <% if(error != ''){ %>
+                <div class="notification" style="background-color: rgba(255, 0, 0, 0.555)"><%= error %></div>
+            <% } %>
+        </div>
+        <!-- noti -->
+
+        <!-- Modal -->
+        <div class="modal" id="modal_add_orchid">
+            <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Add new orchid</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <form method="POST">
+                        <div class="modal-body">
+                            <div class="row g-4">
+                                <div class="col-6">
+                                    <div class="">
+                                        <label for="name" class="form-label">Orchid name:</label>
+                                        <input required type="text" name="name" class="form-control" id="name" placeholder="Enter orchid name"/>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="">
+                                        <label for="origin" class="form-label">Origin:</label>
+                                        <input required type="text" name="origin" class="form-control" id="origin" placeholder="Enter orchid origin"/>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="">
+                                        <label for="category" class="form-label">Category:</label>
+                                        <select class="form-select" name="category">
+                                            <% categoryData.map((category,index)=>{ %>
+                                                <option value="<%= category._id %>"><%= category.categoryName %></option>
+                                            <% }) %>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="">
+                                        <label for="image" class="form-label">Image URL:</label>
+                                        <input required type="text" name="image" class="form-control" id="image" placeholder="Enter image url"/>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="isNatural" class="form-check-input" id="isNatural"/>
+                                        <label class="form-check-label" for="isNatural">Is Natural</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Create</button>
+                            <!-- data-bs-dismiss="modal" :to close -->
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+
+        <!-- Modal Delete -->
+        <div class="modal" id="modal_delete_orchid">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Delete</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <form method="delete" action="/orchids/6540e3a30c5b097bd5b1aaf3">
+                        <div class="modal-body">
+                            <div>Deleted data cannot be recovered! Do you want to continue?</div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button data-bs-dismiss="modal" type="button" class="btn btn-primary">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Delete</button>
+                            <!-- data-bs-dismiss="modal" :to close -->
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Delete -->
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const noti = document.getElementById("noti");
+                setTimeout(() => {
+                    noti.remove();
+                }, 3000);
+            });
+
+            function confirmDelete() {
+                return confirm("Are you sure you want to delete this orchid?");
+            }
+
+            const handleSearch = () => {
+                var input,
+                    filter,
+                    cards,
+                    cardContainer,
+                    title,
+                    i;
+                input = document.getElementById("p_filter_card");
+                filter = input.value.toUpperCase();
+                cardContainer = document.getElementById("p_list_card");
+                cards = cardContainer.getElementsByClassName("p_card");
+                var noResultMessage = document.getElementById("no_data_message");
+
+                var hasVisibleCard = false;
+                for (i = 0; i < cards.length; i++) {
+                    title = cards[i].querySelector(".card-title");
+                    if (title.innerText.toUpperCase().indexOf(filter) > -1) {
+                        cards[i].style.display = "";
+                        hasVisibleCard = true;
+                    } else {
+                        cards[i].style.display = "none";
+                    }
+                }
+                if (! hasVisibleCard) {
+                    noResultMessage.style.display = "block";
+                } else {
+                    noResultMessage.style.display = "none";
+                }
+            };
+        </script>
+    </body>
+</html>
